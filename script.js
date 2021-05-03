@@ -1,32 +1,61 @@
-const pokeContainer = document.getElementById('poke-container')
-const pokemonCount = 150
+const pokeContainer = document.getElementById("poke-container");
+const pokemonCount = 150;
 const colors = {
-    fire: '#FDDFDF',
-    grass: '#DEFDE0',
-	electric: '#FCF7DE',
-	water: '#DEF3FD',
-	ground: '#f4e7da',
-	rock: '#d5d5d4',
-	fairy: '#fceaff',
-	poison: '#98d7a5',
-	bug: '#f8d5a3',
-	dragon: '#97b3e6',
-	psychic: '#eaeda1',
-	flying: '#F5F5F5',
-	fighting: '#E6E0D4',
-	normal: '#F5F5F5'
-}
+  fire: "#FDDFDF",
+  grass: "#DEFDE0",
+  electric: "#FCF7DE",
+  water: "#DEF3FD",
+  ground: "#f4e7da",
+  rock: "#d5d5d4",
+  fairy: "#fceaff",
+  poison: "#98d7a5",
+  bug: "#f8d5a3",
+  dragon: "#97b3e6",
+  psychic: "#eaeda1",
+  flying: "#F5F5F5",
+  fighting: "#E6E0D4",
+  normal: "#F5F5F5",
+};
+
+const mainTypes = Object.keys(colors);
 
 const fetchPokemons = async () => {
-    for (let i = 1; i <= pokemonCount; i++)
-    getPokemon(i)
-}
+  for (let i = 1; i <= pokemonCount; i++) getPokemon(i);
+};
 
 const getPokemon = async (id) => {
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}`
-    const res = await fetch(url)
-    const data = await res.json()
-    console.log(data)
+  const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  createPokemon(data);
+};
+
+function createPokemon(pokemon) {
+  const pokemonEl = document.createElement("div");
+  pokemonEl.classList.add("pokemon");
+  const name = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
+  const id = pokemon.id.toString().padStart(3, 0);
+  const pokeTypes = pokemon.types.map((type) => type.type.name);
+  console.log(pokemon.types);
+  console.log(pokeTypes);
+  const type = mainTypes.find((type) => pokeTypes.indexOf(type) > -1);
+  console.log(type);
+
+  const pokemonHtml = `
+        <div class="img-container">
+         <img src="https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png" alt="">
+        </div>
+        <div class="info">
+          <span class="number">#${id}</span>
+          <h3 class="name">${name}</h3>
+          <small class="type">Type: <span>${type}</span></small>
+        </div>
+  `;
+
+  pokemonEl.style.backgroundColor = colors[type];
+
+  pokemonEl.innerHTML = pokemonHtml;
+  pokeContainer.appendChild(pokemonEl);
 }
 
-fetchPokemons()
+fetchPokemons();
